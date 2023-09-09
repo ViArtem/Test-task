@@ -3,7 +3,7 @@ import Cars from "./model/CreateCarRecord.js";
 class CarRequest {
   async _errorHandler(databasePromise) {
     try {
-      const promiseResult = await databasePromise();
+      const promiseResult = await databasePromise;
 
       return promiseResult;
     } catch (error) {
@@ -12,23 +12,20 @@ class CarRequest {
     }
   }
 
-  async create(id, date, name, prise) {
-    return await this._errorHandler(
-      await new Cars({
-        id,
+  async create(date, name, price) {
+    const car = await this._errorHandler(
+      new Cars({
         brand_name: name,
-        prise,
+        price,
         date,
-      }).save()
-    );
-  }
-
-  async delete(id) {
-    return await this._errorHandler(
-      Cars.deleteOne({
-        id,
       })
     );
+
+    return car.save();
+  }
+
+  async delete(carsIds) {
+    return await this._errorHandler(Cars.deleteMany({ _id: { $in: carsIds } }));
   }
 
   async edit(id, date, name, prise) {
@@ -46,12 +43,8 @@ class CarRequest {
     );
   }
 
-  async findById(id) {
-    return await this._errorHandler(
-      Cars.findOne({
-        id,
-      })
-    );
+  async findById(carsIds) {
+    return await this._errorHandler(Cars.find({ _id: { $in: carsIds } }));
   }
 }
 export default new CarRequest();

@@ -1,19 +1,32 @@
-import CarRequest from "../database/mongo/carRequest";
+import CarRequest from "../database/mongo/carRequest.js";
 
 class CarService {
   constructor() {}
 
-  async create({ id, date, name, prise }) {
+  async create(carsArray) {
     try {
-      const newCar = await CarRequest.create(id, date, name, prise);
+      const newCars = carsArray.map(async (carObject) => {
+        return await CarRequest.create(
+          new Date(),
+          carObject.name,
+          Number(carObject.price)
+        );
+      });
 
-      return newCar;
-    } catch (error) {}
+      return await Promise.all(newCars);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async delete() {
+  async delete(idCarsArray) {
     try {
-    } catch (error) {}
+      const deletedCars = await CarRequest.delete(idCarsArray);
+
+      return deletedCars;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async edit() {
@@ -21,9 +34,13 @@ class CarService {
     } catch (error) {}
   }
 
-  async getOne() {
+  async getById(carsIds) {
     try {
-    } catch (error) {}
+      const car = await CarRequest.findById(carsIds);
+      return car;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

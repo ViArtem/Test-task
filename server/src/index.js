@@ -10,6 +10,7 @@ dotev.config();
 const PORT = process.env.PORT || 5000;
 
 const middlewares = [
+  bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
   bodyParser.text({ type: "application/xml" }),
   carRoute,
