@@ -19,6 +19,21 @@ class CarController {
     }
   }
 
+  #carValidation(carData, validationFunctionName) {
+    const validationMethod = {
+      createCar: СarValidation.createCar,
+      deleteOrGetOneCar: СarValidation.deleteOrGetOneCar,
+      editCar: СarValidation.editCar,
+    };
+
+    const { error } = validationMethod[validationFunctionName](carData);
+
+    if (error) {
+      throw ApiError.BadRequest(error.message);
+    }
+  }
+
+  //
   create = async (req, res, next) => {
     try {
       let carData = req.body;
@@ -39,11 +54,8 @@ class CarController {
         carData = [carData];
       }
 
-      const { error } = СarValidation.createCar(carData);
-
-      if (error) {
-        throw ApiError.BadRequest(error.message);
-      }
+      // validation of input data
+      this.#carValidation(carData, "createCar");
 
       const carRecord = await CarService.create(carData);
 
@@ -62,11 +74,7 @@ class CarController {
         carIds = await this.#parseXml(carIds);
       }
 
-      const { error } = СarValidation.deleteOrGetOneCar(carIds);
-
-      if (error) {
-        throw ApiError.BadRequest(error.message);
-      }
+      this.#carValidation(carIds, "deleteOrGetOneCar");
 
       const deletedCars = await CarService.delete(carIds);
 
@@ -85,11 +93,7 @@ class CarController {
         editCarData = await this.#parseXml(editCarData);
       }
 
-      const { error } = СarValidation.editCar(editCarData);
-
-      if (error) {
-        throw ApiError.BadRequest(error.message);
-      }
+      this.#carValidation(editCarData, "editCar");
 
       const editedCar = await CarService.edit(editCarData);
 
@@ -108,11 +112,7 @@ class CarController {
         carIds = await this.#parseXml(carIds);
       }
 
-      const { error } = СarValidation.deleteOrGetOneCar(carIds);
-
-      if (error) {
-        throw ApiError.BadRequest(error.message);
-      }
+      this.#carValidation(carIds, "deleteOrGetOneCar");
 
       const cars = await CarService.getById(carIds);
 
