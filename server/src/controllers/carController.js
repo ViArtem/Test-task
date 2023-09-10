@@ -116,7 +116,7 @@ class CarController {
 
       const cars = await CarService.getById(carIds);
 
-      return res.status(200).json(cars);
+      return res.status(200).send(cars);
     } catch (error) {
       next(error);
     }
