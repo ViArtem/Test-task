@@ -1,12 +1,11 @@
 import xml2js from "xml2js";
 
 import CarService from "../services/carService.js";
-import СarValidation from "../validation/carValidation.js";
+import СarValidation from "../extentions/carValidation.js";
+import ApiError from "../extentions/apiErrors.js";
 
 class CarController {
-  constructor() {
-    this.create = this.create.bind(this);
-  }
+  constructor() {}
 
   async #parseXml(xml) {
     try {
@@ -16,16 +15,26 @@ class CarController {
 
       return parsedData["Document"]["Car"];
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  async create(req, res, next) {
+  create = async (req, res, next) => {
     try {
       let carData = req.body;
 
       if (req.is("xml")) {
         carData = await this.#parseXml(carData);
+
+        if (!carData) {
+          carData = [
+            {
+              Date: new Date().toLocaleDateString(),
+              BrandName: "Empty",
+              Price: 1234,
+            },
+          ];
+        }
       } else {
         carData = [carData];
       }
@@ -33,55 +42,83 @@ class CarController {
       const { error } = СarValidation.createCar(carData);
 
       if (error) {
-        // TODO: винести це в кастомну відловку помилок
-        return res.status(400).json({ error: true, message: error.message });
+        throw ApiError.BadRequest(error.message);
       }
 
       const carRecord = await CarService.create(carData);
 
       return res.status(200).json(carRecord);
     } catch (error) {
-      console.log(error);
       next(error);
     }
-  }
+  };
 
   //
-  async delete(req, res, next) {
+  delete = async (req, res, next) => {
     try {
-      const { error } = СarValidation.deleteOrGetOneCar(req.body);
+      let carIds = req.body;
+
+      if (req.is("xml")) {
+        carIds = await this.#parseXml(carIds);
+      }
+
+      const { error } = СarValidation.deleteOrGetOneCar(carIds);
 
       if (error) {
-        // TODO: винести це в кастомну відловку помилок
-        return res.status(400).json({ error: true, message: error.message });
+        throw ApiError.BadRequest(error.message);
       }
-      const deletedCars = await CarService.delete(req.body.id);
+
+      const deletedCars = await CarService.delete(carIds);
 
       return res.status(200).json(deletedCars);
-    } catch (error) {}
-  }
+    } catch (error) {
+      next(error);
+    }
+  };
 
   //
-  async edit(req, res, next) {
+  edit = async (req, res, next) => {
     try {
-    } catch (error) {}
-  }
+      let editCarData = req.body;
+
+      if (req.is("xml")) {
+        editCarData = await this.#parseXml(editCarData);
+      }
+
+      const { error } = СarValidation.editCar(editCarData);
+
+      if (error) {
+        throw ApiError.BadRequest(error.message);
+      }
+
+      const editedCar = await CarService.edit(editCarData);
+
+      return res.status(200).json(editedCar);
+    } catch (error) {
+      next(error);
+    }
+  };
 
   //
   async getById(req, res, next) {
     try {
-      const cars = await CarService.getById(req.body.id);
+      let carIds = req.body;
 
-      const { error } = СarValidation.deleteOrGetOneCar(req.body);
+      if (req.is("xml")) {
+        carIds = await this.#parseXml(carIds);
+      }
+
+      const { error } = СarValidation.deleteOrGetOneCar(carIds);
 
       if (error) {
-        // TODO: винести це в кастомну відловку помилок
-        return res.status(400).json({ error: true, message: error.message });
+        throw ApiError.BadRequest(error.message);
       }
+
+      const cars = await CarService.getById(carIds);
 
       return res.status(200).json(cars);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 }

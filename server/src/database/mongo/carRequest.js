@@ -28,15 +28,15 @@ class CarRequest {
     return await this.#errorHandler(Cars.deleteMany({ _id: { $in: carsIds } }));
   }
 
-  async edit(id, date, name, prise) {
+  async edit(carObject) {
     return await this.#errorHandler(
       Cars.findByIdAndUpdate(
-        { id },
+        { _id: carObject.Id },
         {
           $set: {
-            brand_name: name,
-            prise,
-            date,
+            brand_name: carObject.BrandName,
+            prise: carObject.Price,
+            date: carObject.Date,
           },
         }
       )
@@ -44,7 +44,7 @@ class CarRequest {
   }
 
   async findById(carsIds) {
-    return await this._errorHandler(Cars.find({ _id: { $in: carsIds } }));
+    return await this.#errorHandler(Cars.find({ _id: { $in: carsIds } }));
   }
 }
 export default new CarRequest();

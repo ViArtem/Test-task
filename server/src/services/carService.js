@@ -7,39 +7,56 @@ class CarService {
     try {
       const newCars = carsArray.map(async (carObject) => {
         return await CarRequest.create(
-          new Date(),
-          carObject.name,
-          Number(carObject.price)
+          carObject.Date,
+          carObject.BrandName,
+          Number(carObject.Price)
         );
       });
 
       return await Promise.all(newCars);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
+  //
   async delete(idCarsArray) {
     try {
-      const deletedCars = await CarRequest.delete(idCarsArray);
+      const deleteCarsArray = idCarsArray.map((IdCarObject) => {
+        return IdCarObject.Id;
+      });
 
-      return deletedCars;
+      const deleteCarsStatus = await CarRequest.delete(deleteCarsArray);
+
+      return deleteCarsStatus;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
-  async edit() {
+  //
+  async edit(carObject) {
     try {
-    } catch (error) {}
-  }
+      const car = await CarRequest.edit(carObject);
 
-  async getById(carsIds) {
-    try {
-      const car = await CarRequest.findById(carsIds);
       return car;
     } catch (error) {
-      console.log(error);
+      throw error;
+    }
+  }
+
+  //
+  async getById(carsIds) {
+    try {
+      const cars = carsIds.map((IdCarObject) => {
+        return IdCarObject.Id;
+      });
+
+      const allCars = await CarRequest.findById(cars);
+
+      return allCars;
+    } catch (error) {
+      throw error;
     }
   }
 }
