@@ -7,18 +7,6 @@ import ApiError from "../extentions/apiErrors.js";
 class CarController {
   constructor() {}
 
-  async #parseXml(xml) {
-    try {
-      const parsedData = await xml2js.parseStringPromise(xml, {
-        explicitArray: false,
-      });
-
-      return parsedData["Document"]["Car"];
-    } catch (error) {
-      next(error);
-    }
-  }
-
   #carValidation(carData, validationFunctionName) {
     const validationMethod = {
       createCar: СarValidation.createCar,
@@ -38,20 +26,14 @@ class CarController {
     try {
       let carData = req.body;
 
-      if (req.is("xml")) {
-        carData = await this.#parseXml(carData);
-
-        if (!carData) {
-          carData = [
-            {
-              Date: new Date().toLocaleDateString(),
-              BrandName: "Empty",
-              Price: 1234,
-            },
-          ];
-        }
-      } else {
-        carData = [carData];
+      if (!carData) {
+        carData = [
+          {
+            Date: new Date().toLocaleDateString(),
+            BrandName: "Empty",
+            Price: 1234,
+          },
+        ];
       }
 
       // validation of input data
@@ -70,10 +52,6 @@ class CarController {
     try {
       let carIds = req.body;
 
-      if (req.is("xml")) {
-        carIds = await this.#parseXml(carIds);
-      }
-
       this.#carValidation(carIds, "deleteOrGetOneCar");
 
       const deletedCars = await CarService.delete(carIds);
@@ -89,13 +67,9 @@ class CarController {
     try {
       let editCarData = req.body;
 
-      if (req.is("xml")) {
-        editCarData = await this.#parseXml(editCarData);
-      }
+      this.#carValidation(...editCarData, "editCar");
 
-      this.#carValidation(editCarData, "editCar");
-
-      const editedCar = await CarService.edit(editCarData);
+      const editedCar = await CarService.edit(...editCarData);
 
       return res.status(200).json(editedCar);
     } catch (error) {
@@ -104,13 +78,9 @@ class CarController {
   };
 
   //
-  async getById(req, res, next) {
+  getById = async (req, res, next) => {
     try {
-      let carIds = req.body;
-
-      if (req.is("xml")) {
-        carIds = await this.#parseXml(carIds);
-      }
+      const carIds = req.body;
 
       this.#carValidation(carIds, "deleteOrGetOneCar");
 
@@ -120,7 +90,7 @@ class CarController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
 
 export default new CarController();

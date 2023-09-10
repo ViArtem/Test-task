@@ -7,8 +7,7 @@ class CarRequest {
 
       return promiseResult;
     } catch (error) {
-      console.log(error);
-      return { message: error.message };
+      throw error;
     }
   }
 

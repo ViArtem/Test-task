@@ -5,6 +5,7 @@ import dotev from "dotenv";
 import { carRoute } from "./routes/carRoute.js";
 import connectToDatabase from "./database/mongo/connection.js";
 import errorMiddleware from "./middleware/errors.js";
+import parseXMLOrChangeBody from "./middleware/parseXML.js";
 
 const app = express();
 dotev.config();
@@ -14,6 +15,7 @@ const middlewares = [
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
   bodyParser.text({ type: "application/xml" }),
+  parseXMLOrChangeBody,
   carRoute,
   errorMiddleware,
 ];
