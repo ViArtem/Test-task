@@ -35,11 +35,13 @@ class CarService {
   }
 
   //
-  async edit(carObject) {
+  async edit(carsArray) {
     try {
-      const car = await CarRequest.edit(carObject);
+      const editedCars = carsArray.map(async (carObject) => {
+        return await CarRequest.edit(carObject);
+      });
 
-      return car;
+      return await Promise.all(editedCars);
     } catch (error) {
       throw error;
     }

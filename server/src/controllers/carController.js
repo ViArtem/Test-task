@@ -67,9 +67,9 @@ class CarController {
     try {
       let editCarData = req.body;
 
-      this.#carValidation(...editCarData, "editCar");
+      this.#carValidation(editCarData, "editCar");
 
-      const editedCar = await CarService.edit(...editCarData);
+      const editedCar = await CarService.edit(editCarData);
 
       return res.status(200).json(editedCar);
     } catch (error) {
