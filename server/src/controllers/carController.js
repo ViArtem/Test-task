@@ -4,44 +4,28 @@ import CarService from "../services/carService.js";
 import СarValidation from "../validation/carValidation.js";
 
 class CarController {
-  constructor() {}
+  constructor() {
+    this.create = this.create.bind(this);
+  }
 
-  _parseXml = async (xml) => {
+  async #parseXml(xml) {
     try {
-      const pasedData = await xml2js.parseStringPromise(xml);
-      const cars = pasedData["Document"]["Car"].map((elm) => {
-        return {
-          date: elm["Date"][0],
-          name: elm["BrandName"][0],
-          price: elm["Price"][0],
-        };
+      const parsedData = await xml2js.parseStringPromise(xml, {
+        explicitArray: false,
       });
 
-      return cars;
+      return parsedData["Document"]["Car"];
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   async create(req, res, next) {
     try {
       let carData = req.body;
 
-      // TODO: винести це в окрему функцію
       if (req.is("xml")) {
-        const pasedData = await xml2js.parseStringPromise(carData);
-
-        if (pasedData["Document"]["Car"]) {
-          carData = pasedData["Document"]["Car"].map((elm) => {
-            return {
-              date: elm["Date"][0],
-              name: elm["BrandName"][0],
-              price: elm["Price"][0],
-            };
-          });
-        }
-
-        //
+        carData = await this.#parseXml(carData);
       } else {
         carData = [carData];
       }

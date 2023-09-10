@@ -1,7 +1,7 @@
 import Cars from "./model/CreateCarRecord.js";
 
 class CarRequest {
-  async _errorHandler(databasePromise) {
+  async #errorHandler(databasePromise) {
     try {
       const promiseResult = await databasePromise;
 
@@ -13,7 +13,7 @@ class CarRequest {
   }
 
   async create(date, name, price) {
-    const car = await this._errorHandler(
+    const car = await this.#errorHandler(
       new Cars({
         brand_name: name,
         price,
@@ -25,11 +25,11 @@ class CarRequest {
   }
 
   async delete(carsIds) {
-    return await this._errorHandler(Cars.deleteMany({ _id: { $in: carsIds } }));
+    return await this.#errorHandler(Cars.deleteMany({ _id: { $in: carsIds } }));
   }
 
   async edit(id, date, name, prise) {
-    return await this._errorHandler(
+    return await this.#errorHandler(
       Cars.findByIdAndUpdate(
         { id },
         {
