@@ -12,4 +12,6 @@ carRoute.delete("/delete", CarController.delete);
 
 carRoute.get("/get/one", CarController.getById);
 
+carRoute.get("/get/all", CarController.getAll);
+
 export { carRoute };

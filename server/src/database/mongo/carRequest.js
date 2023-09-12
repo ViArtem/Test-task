@@ -45,5 +45,9 @@ class CarRequest {
   async findById(carsIds) {
     return await this.#errorHandler(Cars.find({ _id: { $in: carsIds } }));
   }
+
+  async findAll() {
+    return await this.#errorHandler(Cars.find({}));
+  }
 }
 export default new CarRequest();

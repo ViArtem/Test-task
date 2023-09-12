@@ -91,6 +91,16 @@ class CarController {
       next(error);
     }
   };
+
+  getAll = async (req, res, next) => {
+    try {
+      const cars = await CarService.getAll();
+
+      return res.status(200).send(cars);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default new CarController();

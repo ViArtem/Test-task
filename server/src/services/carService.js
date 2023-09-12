@@ -61,6 +61,17 @@ class CarService {
       throw error;
     }
   }
+
+  //
+  async getAll() {
+    try {
+      const allCars = await CarRequest.findAll();
+
+      return allCars;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new CarService();
