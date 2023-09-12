@@ -34,7 +34,7 @@ class CarRequest {
         {
           $set: {
             brand_name: carObject.BrandName,
-            prise: carObject.Price,
+            price: carObject.Price,
             date: carObject.Date,
           },
         }
