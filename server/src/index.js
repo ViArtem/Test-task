@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import dotev from "dotenv";
+import cors from "cors";
 
 import { carRoute } from "./routes/carRoute.js";
 import connectToDatabase from "./database/mongo/connection.js";
@@ -12,6 +13,7 @@ dotev.config();
 const PORT = process.env.PORT || 5000;
 
 const middlewares = [
+  cors({ origin: process.env.CLIENT_URL, credentials: true }),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: true }),
   bodyParser.text({ type: "application/xml" }),
