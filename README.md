@@ -4,9 +4,11 @@
 
 1. express
 2. mongoDB (mongoose)
-3. xml2js
-4. body-parser
-5. joi
+3. vue
+4. ts
+5. xml2js
+6. body-parser
+7. joi
 
 ---
 
@@ -33,11 +35,21 @@ npm install
 node src/index.js
 ```
 
+#### Start the client:
+
+```JS
+npm install
+```
+
+```JS
+npm run dev
+```
+
 ---
 
 ### Example of the request format
 
-#### Create car (Method: post)
+#### Create car (Method: post, Path: /create)
 
 `Json:`
 
@@ -86,7 +98,7 @@ node src/index.js
 </Document>
 ```
 
-#### Edit car (Method: put)
+#### Edit car (Method: put, Path: /edit)
 
 `Json:`
 
@@ -160,7 +172,7 @@ node src/index.js
 </Document>
 ```
 
-#### Delete car (Method: delete)
+#### Delete car (Method: delete, Path: /delete)
 
 `Json:`
 
@@ -210,7 +222,7 @@ node src/index.js
 </Document>
 ```
 
-#### Get car by Id (Method: get)
+#### Get car by Id (Method: get, Path: /get/one)
 
 `Json:`
 
@@ -258,4 +270,10 @@ node src/index.js
     <Id>64fd8fa48274aa36b6e6858b</Id>
   </Car>
 </Document>
+```
+
+#### Get all cars (Method: get, Path: /get/all)
+
+```JS
+  // body is missing
 ```
